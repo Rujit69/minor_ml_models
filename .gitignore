@@ -1,0 +1,20 @@
+# Ignore environment folders
+venv
+
+__pycache__
+
+images 
+
+test_images
+
+fake_face_detector.pth
+
+
+
+
+best_model.pth
+
+model4.pth
+training_history.pth
+
+training_plot.png
