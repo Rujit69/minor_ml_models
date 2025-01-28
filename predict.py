@@ -1,6 +1,8 @@
 import torch
 from torchvision import transforms, models
 from PIL import Image
+import torch.nn.functional as F  # For softmax
+import torch.nn as nn
 
 # Define the necessary transformations
 data_transforms = transforms.Compose([
@@ -16,18 +18,24 @@ checkpoint_path = 'best_model.pth'
 def load_model():
     # Load the pre-trained DenseNet model
     model = models.densenet121(weights='IMAGENET1K_V1')
-    for param in model.parameters():
-        param.requires_grad = False  # Freeze all layers except the final classifier
 
     # Modify the classifier layer for binary classification (real vs fake)
-    model.classifier = torch.nn.Linear(1024, 2)  # Two output classes (real and fake)
+    model.classifier = nn.Sequential(
+        nn.Linear(1024, 512),
+        nn.ReLU(),
+        nn.Dropout(0.5),
+        nn.Linear(512, 2)
+    )
 
     # Load the checkpoint
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     model = model.to(device)
 
     checkpoint = torch.load(checkpoint_path)
+
+    # Load the model's state_dict
     model.load_state_dict(checkpoint['model_state_dict'])
+
     model.eval()  # Set model to evaluation mode
 
     return model, device
@@ -55,7 +63,13 @@ def predict_image(image_path):
         # Predict
         with torch.no_grad():  # Disable gradient calculation for inference
             outputs = model(image)
-            _, predicted = torch.max(outputs, 1)  # Get the predicted class index
-            return class_names[predicted]
+            probabilities = F.softmax(outputs, dim=1)  # Apply softmax to get probabilities
+            confidence, predicted = torch.max(probabilities, 1)  # Get confidence and predicted class index
+
+            # Convert confidence to a Python float
+            confidence = confidence.item()
+
+            # Return the predicted class and confidence score
+            return class_names[predicted.item()], confidence  # Ensure predicted is accessed correctly
     except Exception as e:
-        return f"Error during prediction: {e}"
+        return f"Error during prediction: {e}", 0.0  # Return 0.0 confidence on error

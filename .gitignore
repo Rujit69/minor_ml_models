@@ -9,7 +9,10 @@ test_images
 
 fake_face_detector.pth
 
-
+images2
+validation images
+model7.pth
+training_validation_plot.png
 
 
 best_model.pth

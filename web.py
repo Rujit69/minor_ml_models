@@ -30,7 +30,7 @@ if uploaded_file is not None:
     # Store the file path in session state
     st.session_state.uploaded_files[file_id] = temp_file_path
 
-    # Display the uploaded image (this reads the image file again)
+    # Display the uploaded image
     st.image(temp_file_path, caption='Uploaded Image.', use_container_width=True)
 
     # Add a predict button for this specific file
@@ -38,12 +38,14 @@ if uploaded_file is not None:
         temp_file_path = st.session_state.uploaded_files[file_id]  # Retrieve file path from session state
 
         try:
-            # Perform prediction
-            prediction = predict_image(temp_file_path)
+            # Perform prediction and get confidence score
+            prediction, confidence = predict_image(temp_file_path)
+            confidence_percentage = confidence * 100  # Convert to percentage
+
             if prediction == "real":
-                st.success(f"✅ Face is: {prediction}")
+                st.success(f"✅ Face is: {prediction} with {confidence_percentage:.2f}% confidence.")
             else:
-                st.error(f"❌ Face is AI generated: {prediction}")
+                st.error(f"❌ Face is AI generated: {prediction} with {confidence_percentage:.2f}% confidence.")
         except Exception as e:
             st.error(f"❌ Error during prediction: {e}")
         finally:
@@ -51,7 +53,6 @@ if uploaded_file is not None:
             try:
                 if os.path.exists(temp_file_path):
                     os.remove(temp_file_path)  # Delete the temporary file
-                    
             except Exception as e:
                 st.error(f"❌ Error deleting file: {e}")
             if file_id in st.session_state.uploaded_files:
