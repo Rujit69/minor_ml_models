@@ -1,23 +1,14 @@
 # Ignore environment folders
 venv
-
 __pycache__
-
 images 
-
 test_images
-
 fake_face_detector.pth
-
 images2
 validation images
 model7.pth
 training_validation_plot.png
-
-
 best_model.pth
-
 model4.pth
 training_history.pth
-
 training_plot.png

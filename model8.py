@@ -1,6 +1,4 @@
 #reducing overfitting 
-
-
 # Optimized for performance, shows graph
 import os
 import torch
