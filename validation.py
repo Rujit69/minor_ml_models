@@ -3,6 +3,9 @@ import torch
 from torchvision import datasets, transforms
 from torch.utils.data import DataLoader
 from tqdm import tqdm  # Import tqdm for progress bar
+from torch import nn
+from torchvision import models
+
 
 def load_validation_data(val_dir, batch_size=64):
     # Define data transformations
@@ -45,7 +48,7 @@ def validate(model, val_loader, device):
     return avg_loss, accuracy
 
 if __name__ == "__main__":
-    val_dir = "D:/hey vagwan jei sri ganesh/validation images"  # Update this to your validation directory
+    val_dir = "D:\hey vagwan jei sri ganesh\validation images"  # Update this to your validation directory
     batch_size = 64  # Adjust as needed
 
     # Load validation data

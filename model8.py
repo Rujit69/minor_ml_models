@@ -1,5 +1,7 @@
 #reducing overfitting 
 # Optimized for performance, shows graph
+#! note to self to generate new plot for new dataset delete training_history file this wont effect the training process as checkpoint is loaded from model itself
+
 import os
 import torch
 import torch.nn as nn
@@ -13,9 +15,10 @@ import matplotlib.pyplot as plt
 from torch.cuda.amp import GradScaler, autocast
 
 # Import the validation function from the validation script
-from validation import validate, load_validation_data  # Ensure validation.py is in the same directory
+from validation import validate, load_validation_data   
 
 # Section 1: Data Loading and Preprocessing
+
 data_transforms = transforms.Compose([
     transforms.Resize((224, 224)),
     transforms.RandomHorizontalFlip(),  # Random horizontal flip
@@ -28,9 +31,9 @@ data_transforms = transforms.Compose([
     transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
 ])
 
-data_dir = r'D:\hey vagwan jei sri ganesh\images'  # Path to the dataset
+data_dir = r'D:\hey vagwan jei sri ganesh\Training Dataset' 
 train_dataset = datasets.ImageFolder(os.path.join(data_dir), transform=data_transforms)
-train_loader = DataLoader(train_dataset, batch_size=64, shuffle=True, num_workers=4, pin_memory=True, prefetch_factor=2)
+train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True, num_workers=4, pin_memory=True, prefetch_factor=2)
 class_names = train_dataset.classes
 
 # Section 2: Load Validation Data
@@ -60,7 +63,7 @@ for param in model.classifier.parameters():
 
 #model.classifier = nn.Linear(1024, 2)  # Binary classifier for real/fake
 
-#to reduce overfitting
+#!to reduce overfitting
 model.classifier = nn.Sequential(
     nn.Linear(1024, 512),
     nn.ReLU(),
@@ -78,11 +81,11 @@ optimizer = optim.Adam(model.parameters(), lr=0.001, weight_decay=1e-4)
 #scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=10, gamma=0.1)
 
 #! to reduce overfitting
-scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=0.1, patience=3, verbose=True)
+scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=0.1, patience=2, verbose=True)
 
 
 # Section 5: Training Function with Dynamic Graph Updates and Best Model Saving
-def train_model(model, dataloader, val_loader, criterion, optimizer, device, num_epochs=10, checkpoint_path='model7.pth', best_model_path='best_model.pth', history_path='training_history.pth'):
+def train_model(model, dataloader, val_loader, criterion, optimizer, device, num_epochs=10, checkpoint_path='model8.pth', best_model_path='best_model.pth', history_path='training_history.pth'):
     start_epoch = 0
     train_losses = []
     train_accuracies = []
@@ -101,9 +104,9 @@ def train_model(model, dataloader, val_loader, criterion, optimizer, device, num
         val_accuracies = history.get('val_accuracies', [])
         start_epoch = history.get('epoch', 0)
         best_accuracy = history.get('best_accuracy', 0.0)
-        print(f"Resuming training from epoch {start_epoch + 1} with best accuracy {best_accuracy:.2f}%...")
+        print(f"Resuming plotting from epoch {start_epoch + 1} with best accuracy {best_accuracy:.2f}%...")
     else:
-        print("No training history found, starting from scratch.")
+        print("No training history found, creating training history from scratch.")
 
     # Check if a checkpoint exists and load it
     if os.path.exists(checkpoint_path):
@@ -171,7 +174,7 @@ def train_model(model, dataloader, val_loader, criterion, optimizer, device, num
                 'loss': epoch_loss,
                 'best_accuracy': best_accuracy,
             }, best_model_path)
-            print(f"New best model saved with accuracy {best_accuracy:.2f}%")
+            print(f"New best model saved with validation accuracy {best_accuracy:.2f}%")
 
         # Save checkpoint
         torch.save({
@@ -195,7 +198,6 @@ def train_model(model, dataloader, val_loader, criterion, optimizer, device, num
 
 
     # Plot the training and validation loss and accuracy at the end of all epochs
-    #! maybe try creating a new file and call as function ?
     plt.figure(figsize=(12, 5))
 
     # Plot training and validation loss 
@@ -206,7 +208,7 @@ def train_model(model, dataloader, val_loader, criterion, optimizer, device, num
     plt.ylabel('Loss')
     plt.title('Training and Validation Loss Over Epochs')
     plt.legend()
-
+ 
     # Plot training and validation accuracy
     plt.subplot(1, 2, 2)
     plt.plot(range(len(train_accuracies) + 1), [0] + train_accuracies, label='Training Accuracy', color='blue')  # Training accuracy in blue
@@ -222,8 +224,8 @@ def train_model(model, dataloader, val_loader, criterion, optimizer, device, num
 
 # Section 6: Train the Model
 if __name__ == '__main__':
-    checkpoint_path = 'model7.pth'
+    checkpoint_path = 'model8.pth'
     best_model_path = 'best_model.pth'
     history_path = 'training_history.pth'
-    num_epochs = 2  # Number of epochs to run
+    num_epochs = 1  # Number of epochs to run
     train_model(model, train_loader, val_loader, criterion, optimizer, device, num_epochs, checkpoint_path, best_model_path, history_path)
