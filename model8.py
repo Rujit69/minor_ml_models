@@ -114,6 +114,7 @@ def train_model(model, dataloader, val_loader, criterion, optimizer, device, num
         checkpoint = torch.load(checkpoint_path)
         model.load_state_dict(checkpoint['model_state_dict'])
         optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+        scheduler.load_state_dict(checkpoint['lr_scheduler_state_dict'])
         start_epoch = checkpoint.get('epoch', 0)
         print(f"Resuming training from epoch {start_epoch + 1}...")
     else:
@@ -172,6 +173,7 @@ def train_model(model, dataloader, val_loader, criterion, optimizer, device, num
                 'model_state_dict': model.state_dict(),
                 'optimizer_state_dict': optimizer.state_dict(),
                 'loss': epoch_loss,
+                'lr_scheduler_state_dict':scheduler.state_dict(),
                 'best_accuracy': best_accuracy,
             }, best_model_path)
             print(f"New best model saved with validation accuracy {best_accuracy:.2f}%")
@@ -182,6 +184,7 @@ def train_model(model, dataloader, val_loader, criterion, optimizer, device, num
             'model_state_dict': model.state_dict(),
             'optimizer_state_dict': optimizer.state_dict(),
             'loss': epoch_loss,
+            'lr_scheduler_state_dict':scheduler.state_dict(),
             'best_accuracy': best_accuracy,
         }, checkpoint_path)
 
@@ -208,7 +211,7 @@ def train_model(model, dataloader, val_loader, criterion, optimizer, device, num
     plt.ylabel('Loss')
     plt.title('Training and Validation Loss Over Epochs')
     plt.legend()
- 
+    
     # Plot training and validation accuracy
     plt.subplot(1, 2, 2)
     plt.plot(range(len(train_accuracies) + 1), [0] + train_accuracies, label='Training Accuracy', color='blue')  # Training accuracy in blue
