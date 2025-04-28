@@ -2,6 +2,10 @@
 
 © 2025 Rujit, Roshna, Kalya, Sandhya. All rights reserved.  
 This project is for educational and personal use only.  
+This project is a machine learning-based image face detection application. 
+It uses a pre-trained model to detect and highlight faces in uploaded images, 
+providing users with an easy-to-use interface for face recognition tasks.  
+
 Commercial use, redistribution, or copying without explicit permission is prohibited.
 
 
