@@ -1,3 +1,11 @@
+## 📄 Copyright
+
+© 2025 Rujit, Roshna, Kalya, Sandhya. All rights reserved.  
+This project is for educational and personal use only.  
+Commercial use, redistribution, or copying without explicit permission is prohibited.
+
+
+
 create a directory for training images 
 
 working directory 
