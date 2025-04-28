@@ -49,7 +49,7 @@ def validate(model, val_loader, device):
 
 if __name__ == "__main__":
     val_dir = "D:\hey vagwan jei sri ganesh\validation images"  # Update this to your validation directory
-    batch_size = 64  # Adjust as needed
+    batch_size = 64  
 
     # Load validation data
     val_loader, class_names = load_validation_data(val_dir, batch_size)
@@ -57,7 +57,7 @@ if __name__ == "__main__":
     # Load your trained model
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = models.densenet121(weights='IMAGENET1K_V1')
-    model.classifier = nn.Linear(1024, 2)  # Ensure the model matches your training setup
+    model.classifier = nn.Linear(1024, 2)  
     model.load_state_dict(torch.load('best_model.pth')['model_state_dict'])  # Load best model
     model.to(device)
 

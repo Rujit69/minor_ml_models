@@ -1,7 +1,6 @@
-#reducing overfitting 
+ #reducing overfitting 
 # Optimized for performance, shows graph
 #! note to self to generate new plot for new dataset delete training_history file this wont effect the training process as checkpoint is loaded from model itself
-
 import os
 import torch
 import torch.nn as nn
@@ -70,7 +69,6 @@ model.classifier = nn.Sequential(
     nn.Dropout(0.5),  # 50% dropout
     nn.Linear(512, 2)
 )
-
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 model = model.to(device)

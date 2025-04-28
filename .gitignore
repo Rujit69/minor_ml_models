@@ -3,13 +3,9 @@ venv
 __pycache__
 images 
 Training Dataset
-fake_face_detector.pth
 images2
 validation images
-model7.pth
 training_validation_plot.png
-best_model.pth
-model4.pth
 training_history.pth
 training_plot.png
 model8.pth

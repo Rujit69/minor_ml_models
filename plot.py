@@ -1,5 +1,8 @@
 
 #! nothing fancy here just a code to plot and view data saved in training_history.pth file
+#! ps already training garney code mai plot ko codes cha hai this for extra details saved in 
+#! training_history.pth
+
 import os
 import torch
 import torch.nn as nn
@@ -51,13 +54,14 @@ plt.legend()
 plt.tight_layout()
 
 plt.savefig('detailed_plot.png')  # Save the plot to a file
-print("Plot saved to 'training_validation_plot.png'")
+print("Plot saved to 'detailed_plot.png'")
 
-file_path = 'path_to_your_file.pth'
+#! plot garda use huney data display garna ko lagi
+file_path = 'training_history.pth'
 saved_data = torch.load(file_path)
-
-# Display the extracted contents
 print(saved_data)
+
+
 
 
 
